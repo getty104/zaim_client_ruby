@@ -1,0 +1,14 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    oauth (0.5.10)
+
+PLATFORMS
+  x86_64-darwin-20
+  x86_64-linux
+
+DEPENDENCIES
+  oauth
+
+BUNDLED WITH
+   2.3.18
