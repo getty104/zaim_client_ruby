@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'json'
 require 'oauth'
 require 'uri'
 
@@ -23,7 +24,7 @@ module Zaim
     end
 
     def request(http_method:, endpoint:, params: {})
-      unless %i[get post put delete patch].include?(http_method)
+      unless %i(get post put delete patch).include?(http_method)
         raise NotPermittedValueError, 'Only :get, :post, :put, :delete, :patch are allowed for http_method'
       end
 
@@ -31,15 +32,18 @@ module Zaim
       uri.query = nil
       request_url = uri.to_s
 
-      if %i[get delete].include?(http_method)
+      response = if %i(get delete).include?(http_method)
         formatted_params = params.map { |key, value| "#{key}=#{value}" }.join('&')
         request_url = "#{request_url}?#{formatted_params}" if formatted_params.present?
         access_token.get(request_url)
       else
         access_token.send(http_method, request_url, params)
       end
+
+      JSON.parse(response.body, symbolize_names: true)
     end
 
     class NotPermittedValueError < StandardError; end
   end
 end
+
